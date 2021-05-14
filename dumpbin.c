@@ -20,16 +20,17 @@ void createBinary(){
 int main(int argc, char **argv){
     FILE *f, *input;
     int i = 0;
-    input = fopen(argv[1], "r");
+    input = fopen(argv[1], "rb");
     createBinary();
 
     if (input == NULL){
         fprintf(stderr, "Could not open input file\n");
     }
-    
-    while(!feof(input)){
+     
+    int reading = 1;
+    while(reading){
         uint8_t byte;
-        if(fread(&byte, sizeof(uint8_t), 1, input)){
+        if(reading = fread(&byte, sizeof(uint8_t), 1, input)){
             binary[i++] = byte;
         }
     }
