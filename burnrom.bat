@@ -1,1 +1,1 @@
-minipro -p AT28C256 -w bootrom.bin
+minipro -p AT28C256 -w %1
