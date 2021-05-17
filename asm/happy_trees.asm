@@ -1,6 +1,6 @@
-; junk scroll
+; happy trees
 ;
-; Keep scrolling through the complete character set of the lcd
+; Print some Bob Ross ipsum. https://www.bobrosslipsum.com
 ;
 ; This program can run with the setup at the end of the forth video of Ben
 ; Eater's breadboard 6502.
@@ -17,6 +17,8 @@ RS = %00100000
 
 CHR_PER_DISP   = 16
 LINE_PER_DISP  = 2
+
+MSG_LEN = 220
 
     .org $8000
 
@@ -64,7 +66,14 @@ reset:
     lda #$0        ;clear RS/RW/E bits
     sta PORTA
 
+    ldy #0       ; loop over all of the display characters
 print:
+
+    ;TODO instead of returning home we really want to scroll down one line.  Is that possible.
+    ;Not as a built in feature.  Both the lines scroll at the same time it doesn't scroll up
+    ;Also doesn't look like they have a memcopy so the second line would need to be shifted
+    ;up by the MPU, cursor moved to the start of the second line and the contents of
+    ;the second line overwritten.
 
     ;
     ; Return to the home cursor position if we still have junk to print
@@ -80,15 +89,11 @@ print:
 
     lda #$0        ;clear RS/RW/E bits
     sta PORTA
-    jmp print
-
-
-    ldy #$ff       ; loop over all of the display characters
 
 
     ldx #CHR_PER_DISP
 print_line1:
-    tya            ; print junk
+    lda trees,y    ; get a character from the message
     sta PORTB
 
     lda #RS        ; Set RS
@@ -100,7 +105,9 @@ print_line1:
     lda #RS        ; set RS
     sta PORTA
 
-    dey            ; move to the next character
+    iny            ; move to the next character
+    tya
+    cmp #MSG_LEN
     beq end_print  ; are we done?
     dex            ; move to the next cursor position
     bne print_line1; loop if we still have cursor positions
@@ -123,7 +130,7 @@ print_line1:
     
     ldx #CHR_PER_DISP
 print_line2:
-    tya            ; print junk
+    lda trees,y    ; get a character from the message
     sta PORTB
 
     lda #RS        ; Set RS
@@ -135,14 +142,23 @@ print_line2:
     lda #RS        ; set RS
     sta PORTA
 
-    dey             ; move to the next character 
+    iny             ; move to the next character 
+    tya
+    cmp #MSG_LEN
     beq end_print   ; are we done?
     dex             ; move to the next cursor position
     bne print_line2 ; loop if we still have cursor positions
 
 end_print:
+    tya
+    cmp #MSG_LEN ; if we are at the end of the message we need to reset the index
+    bne print
+    ldy #0       ; loop over all of the display characters
     jmp print
 
+trees:
+    .byte "Let's make some happy little clouds in our world. Pretend you're water. Just floating without any effort. Having a good day. Trees grow in all kinds of ways. They're not all perfectly straight. Not every limb is perfect."
     .org $fffc
     .word reset
     .word $0000 ;padding
+
