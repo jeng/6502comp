@@ -7,3 +7,5 @@ vasm6502_oldstyle -Fbin lcd_hello_world.asm  -dotdir -o lcd_hello_world.bin
 vasm6502_oldstyle -Fbin junk_scroll.asm      -dotdir -o junk_scroll.bin
 vasm6502_oldstyle -Fbin cursor_test.asm      -dotdir -o cursor_test.bin
 vasm6502_oldstyle -Fbin happy_trees.asm      -dotdir -o happy_trees.bin
+vasm6502_oldstyle -Fbin testram.asm          -dotdir -o testram.bin
+vasm6502_oldstyle -Fbin happy_trees_ram.asm  -dotdir -o happy_trees_ram.bin
