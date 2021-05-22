@@ -9,3 +9,5 @@ vasm6502_oldstyle -Fbin cursor_test.asm      -dotdir -o cursor_test.bin
 vasm6502_oldstyle -Fbin happy_trees.asm      -dotdir -o happy_trees.bin
 vasm6502_oldstyle -Fbin testram.asm          -dotdir -o testram.bin
 vasm6502_oldstyle -Fbin happy_trees_ram.asm  -dotdir -o happy_trees_ram.bin
+vasm6502_oldstyle -Fbin num_display.asm      -dotdir -o num_display.bin
+vasm6502_oldstyle -Fbin final_count_down.asm -dotdir -o final_count_down.bin

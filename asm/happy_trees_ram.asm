@@ -22,7 +22,61 @@ MSG_LEN = 220
 
     .org $8000
 
+lcd_wait:
+    pha
+    lda #%00000000 ; set port b as input
+    sta DDRB 
+lcdbusy:
+    lda #RW        ; read the busy flag
+    sta PORTA
+    lda #(RW | E)
+    sta PORTA
+    lda PORTB
+    and #%10000000 ; just get the busy flag
+    bne lcdbusy   ; loop when the bit is set
+
+    lda #RW        ; read the busy flag
+    sta PORTA
+    lda #%11111111 ; set port b as output
+    sta DDRB 
+    pla
+    rts
+ 
+
+delay:
+    pha
+    txa
+    pha
+    ldx #$ff
+delay_loop:
+    dex
+    nop
+    nop
+    nop
+    nop
+    nop
+    bne delay_loop
+    pla
+    tax
+    pla
+    rts
+
+super_delay:
+    pha
+    txa
+    pha
+    ldx #18
+super_delay_loop:
+    jsr delay
+    dex
+    bne super_delay_loop
+    pla
+    tax
+    pla
+    rts
+
 send_lcd_cmd:
+    jsr lcd_wait
     sta PORTB
 
     lda #$0        ;clear RS/RW/E bits
@@ -36,6 +90,7 @@ send_lcd_cmd:
     rts
 
 put_lcd_char:
+    jsr lcd_wait
     sta PORTB
 
     lda #RS        ; Set RS
@@ -79,12 +134,17 @@ print:
     ;
     lda #%00000010 ; return home
     jsr send_lcd_cmd
-
+    ; Clear the display
+    lda #%00000001
+    jsr send_lcd_cmd
+ 
 
     ldx #CHR_PER_DISP
 print_line1:
     lda trees,y    ; get a character from the message
+
     jsr put_lcd_char
+    jsr super_delay
 
     iny            ; move to the next character
     tya
@@ -103,7 +163,9 @@ print_line1:
     ldx #CHR_PER_DISP
 print_line2:
     lda trees,y    ; get a character from the message
+
     jsr put_lcd_char
+    jsr super_delay
 
     iny             ; move to the next character 
     tya
@@ -111,6 +173,9 @@ print_line2:
     beq end_print   ; are we done?
     dex             ; move to the next cursor position
     bne print_line2 ; loop if we still have cursor positions
+
+    jsr super_delay
+    jsr super_delay
 
 end_print:
     tya
