@@ -13,3 +13,5 @@ vasm6502_oldstyle -Fbin num_display.asm      -dotdir -o num_display.bin
 vasm6502_oldstyle -Fbin final_count_down.asm -dotdir -o final_count_down.bin
 vasm6502_oldstyle -Fbin fcd_int.asm          -dotdir -o fcd_int.bin
 vasm6502_oldstyle -Fbin fcd_int_4pins.asm    -dotdir -o fcd_int_4pins.bin
+vasm6502_oldstyle -Fbin read_keyboard.asm    -dotdir -o read_keyboard.bin
+vasm6502_oldstyle -Fbin test_seven_seg.asm   -dotdir -o test_seven_seg.bin
